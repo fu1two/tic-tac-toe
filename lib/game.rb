@@ -14,12 +14,12 @@ class Game
     welcome_message_display
     board_display
     user_input_message
-    until game_is_over(@board) || tie?(@board)
-      get_human_spot
-      if !game_is_over(@board) && !tie?(@board)
-        eval_board
-      end
+    until game_is_over?(@board) || tie?(@board)
+      if get_human_spot && !game_is_over?(@board) && !tie?(@board)
+        eval_board 
+      end     
       board_display
+      user_input_message
     end
     game_over_message
   end
@@ -27,11 +27,17 @@ class Game
   def get_human_spot
     spot = nil
     until spot
-      spot = gets.chomp.to_i
-      if @board[spot] != "X" && @board[spot] != "O"
-        @board[spot] = @human
-      else
-        spot = nil
+      spot = gets.chomp
+      if spot =~ /[0-8]/ && spot.length == 1
+      # if (0..8).to_a.include?(spot)
+        # puts "In!"
+        location = spot.to_i
+        if @board[location] != "X" && @board[location] != "O"
+          @board[location] = @human
+          return true
+        else
+          spot = nil
+        end
       end
     end
   end
@@ -63,13 +69,13 @@ class Game
     end
     available_spaces.each do |as|
       board[as.to_i] = @computer
-      if game_is_over(board)
+      if game_is_over?(board)
         best_move = as.to_i
         board[as.to_i] = as
         return best_move
       else
         board[as.to_i] = @human
-        if game_is_over(board)
+        if game_is_over?(board)
           best_move = as.to_i
           board[as.to_i] = as
           return best_move
@@ -86,7 +92,7 @@ class Game
     end
   end
 
-  def game_is_over(board)
+  def game_is_over?(board)
 
     [board[0], board[1], board[2]].uniq.length == 1 ||
     [board[3], board[4], board[5]].uniq.length == 1 ||
