@@ -1,32 +1,43 @@
+require_relative "game-view.rb"
+
 class Game
+  
+  include GameView
+
   def initialize
     @board = ["0", "1", "2", "3", "4", "5", "6", "7", "8"]
-    @com = "X"
-    @hum = "O"
+    @computer = "X"
+    @human = "O"
   end
 
   def start_game
-    puts "Welcome to my Tic Tac Toe game"
-    puts "|_#{@board[0]}_|_#{@board[1]}_|_#{@board[2]}_|\n|_#{@board[3]}_|_#{@board[4]}_|_#{@board[5]}_|\n|_#{@board[6]}_|_#{@board[7]}_|_#{@board[8]}_|\n"
-    puts "Please select your spot."
-    until game_is_over(@board) || tie(@board)
-      get_human_spot
-      if !game_is_over(@board) && !tie(@board)
-        eval_board
-      end
-      puts "|_#{@board[0]}_|_#{@board[1]}_|_#{@board[2]}_|\n|_#{@board[3]}_|_#{@board[4]}_|_#{@board[5]}_|\n|_#{@board[6]}_|_#{@board[7]}_|_#{@board[8]}_|\n"
+    welcome_message_display
+    board_display
+    user_input_message
+    until game_is_over?(@board) || tie?(@board)
+      if get_human_spot && !game_is_over?(@board) && !tie?(@board)
+        eval_board 
+      end     
+      board_display
+      user_input_message
     end
-    puts "Game over"
+    game_over_message
   end
 
   def get_human_spot
     spot = nil
     until spot
-      spot = gets.chomp.to_i
-      if @board[spot] != "X" && @board[spot] != "O"
-        @board[spot] = @hum
-      else
-        spot = nil
+      spot = gets.chomp
+      if spot =~ /[0-8]/ && spot.length == 1
+      # if (0..8).to_a.include?(spot)
+        # puts "In!"
+        location = spot.to_i
+        if @board[location] != "X" && @board[location] != "O"
+          @board[location] = @human
+          return true
+        else
+          spot = nil
+        end
       end
     end
   end
@@ -36,11 +47,11 @@ class Game
     until spot
       if @board[4] == "4"
         spot = 4
-        @board[spot] = @com
+        @board[spot] = @computer
       else
-        spot = get_best_move(@board, @com)
+        spot = get_best_move(@board, @computer)
         if @board[spot] != "X" && @board[spot] != "O"
-          @board[spot] = @com
+          @board[spot] = @computer
         else
           spot = nil
         end
@@ -57,14 +68,14 @@ class Game
       end
     end
     available_spaces.each do |as|
-      board[as.to_i] = @com
-      if game_is_over(board)
+      board[as.to_i] = @computer
+      if game_is_over?(board)
         best_move = as.to_i
         board[as.to_i] = as
         return best_move
       else
-        board[as.to_i] = @hum
-        if game_is_over(board)
+        board[as.to_i] = @human
+        if game_is_over?(board)
           best_move = as.to_i
           board[as.to_i] = as
           return best_move
@@ -81,20 +92,20 @@ class Game
     end
   end
 
-  def game_is_over(b)
+  def game_is_over?(board)
 
-    [b[0], b[1], b[2]].uniq.length == 1 ||
-    [b[3], b[4], b[5]].uniq.length == 1 ||
-    [b[6], b[7], b[8]].uniq.length == 1 ||
-    [b[0], b[3], b[6]].uniq.length == 1 ||
-    [b[1], b[4], b[7]].uniq.length == 1 ||
-    [b[2], b[5], b[8]].uniq.length == 1 ||
-    [b[0], b[4], b[8]].uniq.length == 1 ||
-    [b[2], b[4], b[6]].uniq.length == 1
+    [board[0], board[1], board[2]].uniq.length == 1 ||
+    [board[3], board[4], board[5]].uniq.length == 1 ||
+    [board[6], board[7], board[8]].uniq.length == 1 ||
+    [board[0], board[3], board[6]].uniq.length == 1 ||
+    [board[1], board[4], board[7]].uniq.length == 1 ||
+    [board[2], board[5], board[8]].uniq.length == 1 ||
+    [board[0], board[4], board[8]].uniq.length == 1 ||
+    [board[2], board[4], board[6]].uniq.length == 1
   end
 
-  def tie(b)
-    b.all? { |s| s == "X" || s == "O" }
+  def tie?(board)
+    board.all? { |s| s == "X" || s == "O" }
   end
 
 end
