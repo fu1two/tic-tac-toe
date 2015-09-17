@@ -19,7 +19,7 @@ class Game
         eval_board 
       end     
       board_display
-      user_input_message
+      user_input_message if !game_is_over?(@board)
     end
     game_over_message
   end
@@ -29,8 +29,6 @@ class Game
     until spot
       spot = gets.chomp
       if spot =~ /[0-8]/ && spot.length == 1
-      # if (0..8).to_a.include?(spot)
-        # puts "In!"
         location = spot.to_i
         if @board[location] != "X" && @board[location] != "O"
           @board[location] = @human
