@@ -1,3 +1,15 @@
+#Player Class Pseudocode
+# Input: Player Name, Player Symbol
+
+#Board Class Pseudocode
+
+
+#Game Class Pseudocode
+#Input: Board, Players, Turn Order
+
+
+
+
 require_relative "game-view.rb"
 
 class Game
@@ -21,7 +33,9 @@ class Game
       board_display
       user_input_message if !game_is_over?(@board)
     end
-    game_over_message
+    puts "It's a draw!" if tie?(@board)
+    puts "It's a draw!" if game_is_over?(@board)
+
   end
 
   def get_human_spot
@@ -57,7 +71,7 @@ class Game
     end
   end
 
-  def get_best_move(board, next_player, depth = 0, best_score = {})
+  def get_best_move(board, next_player)
     available_spaces = []
     best_move = nil
     board.each do |s|
@@ -65,28 +79,48 @@ class Game
         available_spaces << s
       end
     end
-    available_spaces.each do |as|
-      board[as.to_i] = @computer
+
+    available_spaces.each do |space|
+      #Winning Move
+      board[space.to_i] = @computer
       if game_is_over?(board)
-        best_move = as.to_i
-        board[as.to_i] = as
+        best_move = space.to_i
+        board[space.to_i] = space
         return best_move
       else
-        board[as.to_i] = @human
+        #Blocking Move
+        board[space.to_i] = @human
         if game_is_over?(board)
-          best_move = as.to_i
-          board[as.to_i] = as
+          best_move = space.to_i
+          board[space.to_i] = space
           return best_move
         else
-          board[as.to_i] = as
+          board[space.to_i] = space
         end
       end
     end
     if best_move
       return best_move
     else
-      n = rand(0..available_spaces.count)
-      return available_spaces[n].to_i
+      #Random Move
+      if @board[4] == "O"
+        random_corner_spot = [0, 2, 6, 8].sample
+        return random_corner_spot
+      elsif @board[0] == "O" && @board[8] == "8"
+        @board[8].to_i
+      elsif @board[2] == "O" && @board[6] == "6"
+        @board[6].to_i
+      elsif @board[6] == "O" && @board[2] == "2"
+        @board[2].to_i
+      elsif @board[8] == "O" && @board[0] == "0"
+        @board[0].to_i
+      elsif @board[4] == "X"
+        random_edge_spot = [1, 3, 5, 7].sample
+        return random_edge_spot
+      else
+        n = rand(0..available_spaces.count)
+        return available_spaces[n].to_i
+      end
     end
   end
 
@@ -100,6 +134,7 @@ class Game
     [board[2], board[5], board[8]].uniq.length == 1 ||
     [board[0], board[4], board[8]].uniq.length == 1 ||
     [board[2], board[4], board[6]].uniq.length == 1
+      
   end
 
   def tie?(board)
