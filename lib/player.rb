@@ -5,4 +5,7 @@ class Player
     @symbol = params[:symbol]
   end
 
+
+
+
 end

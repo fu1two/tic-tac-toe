@@ -5,7 +5,7 @@ module GameView
   end
 
   def board_display
-     puts "|_#{@board[0]}_|_#{@board[1]}_|_#{@board[2]}_|\n|_#{@board[3]}_|_#{@board[4]}_|_#{@board[5]}_|\n|_#{@board[6]}_|_#{@board[7]}_|_#{@board[8]}_|\n"
+     puts "|_#{@board.spaces[0]}_|_#{@board.spaces[1]}_|_#{@board.spaces[2]}_|\n|_#{@board.spaces[3]}_|_#{@board.spaces[4]}_|_#{@board.spaces[5]}_|\n|_#{@board.spaces[6]}_|_#{@board.spaces[7]}_|_#{@board.spaces[8]}_|\n"
   end
 
   def user_input_message
